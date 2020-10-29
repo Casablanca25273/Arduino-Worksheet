@@ -9,20 +9,32 @@ import pandas
 import numpy as np
 import matplotlib.pyplot as plt
 
-data1 = pandas.read_csv('/home/tankiso/Documents/SARAO/ProcHeraAux.csv')
-print(data1)
-array = np.asarray(data1)
-print(array)
-freq1 = array[:,0]
-lvl1 = array[:,1]
-lvl2 = array[:,2]
-lvl3 = array[:,3]
-plt.plot(freq1,lvl1, label=1)
-plt.plot(freq1,lvl2, label=2)
-plt.plot(freq1,lvl3, label=3)
-#plt.title("Lab RFI 125 MHz")
+procHera = pandas.read_csv('/home/tankiso/Documents/SARAO/ProcHeraAux.csv')
+array = np.asarray(procHera)                        #convert procHera to an array
+freq1 = array[:,0]                                  #takes all values on the first column
+PowtoEfield = array[:,1]                            #takes all values on second column
+data1 = pandas.read_csv('/home/tankiso/Documents/SARAO/2020_10_07_Hera_Node_18_maxhold_1kHz/2020_10_07_Hera_Node_18_maxhold_1kHz.csv', skiprows=76)
+array1 = np.asarray(data1)                          #convert data1 to an array
+freq = np.linspace(80, 6000, 64001, endpoint=True)  #creates evenly spaced freq sequence at the specified parameters
+lvl1 = array1[:,0]  
+
+E_Spec = array[:,2]                                 #takes all values on third column
+E_Cont = array[:,3] 
+
+print("The E-Field strength at 1 m of the maximum emission is", max(lvl1+PowtoEfield))#print the sum
+
+plt.plot(freq1,lvl1+PowtoEfield,label='HERA')
+plt.plot(freq1,E_Spec,color='r',label='E_Spec')
+plt.plot(freq1,E_Cont,color='orange', label='E_Cont') 
 plt.xlabel("Frequency (MHz)")
-plt.ylabel("Power Level (dBm)")
+plt.ylabel("Power (dBuV/m)")
 plt.legend()
-#plt.savefig('lab_rfi_125MHz.png' )
+plt.show()
+
+lvl_diff = np.subtract((lvl1+PowtoEfield),E_Spec)               #calculate difference between the specified paramenters
+print("The max diff between E_spec and HERA is", max(lvl_diff))#print the max difference 
+plt.plot(freq1,lvl_diff, label='Diff') 
+plt.xlabel("Frequency (MHz)")
+plt.ylabel("Power (dBuV/m)")
+plt.title("Difference")
 plt.show()
