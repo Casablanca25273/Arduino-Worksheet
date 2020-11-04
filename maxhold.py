@@ -17,20 +17,24 @@ print("The max power level is",max(lvl1))           #print max valu of power lev
 print("The index value of the max power level is",np.where(lvl1==max(lvl1)))#print index value of where the max value is
 print("The corresponding max frequency is",freq[np.where(lvl1==max(lvl1))]) #print corresponding frequency value to index value    
 pylab.plot(freq,lvl1,label='HERA on')               #plotting and labelling 
+pylab.title("HERA Electronics Power Level")
 pylab.ylabel("Power Level (dBm)")                   #y-axis label
 pylab.xlabel("Frequency (MHz)")                     #x-axis label
+
 
 data2 = pandas.read_csv('/home/tankiso/Documents/SARAO/2020_10_07_Hera_Node_18_maxhold_1kHz/2020_10_07_Hera_Node_18_maxhold_1kHz_BG.csv', skiprows=76)
 array1 = np.asarray(data2)
 lvl2 = array1[:,0]               
 pylab.plot(freq,lvl2,label='HERA off')
 pylab.legend()                                      #place legend on axis
+pylab.savefig('HERA.jpeg')
 pylab.show()                                        #show the plots
+
 
 lvl_diff = np.subtract(lvl2,lvl1)                   #calculating the difference between the two plots
 pylab.plot(freq,lvl_diff)                           #plotting the difference plot
 pylab.title("Difference")
 pylab.xlabel("Frequency (MHz)")
-pylab.ylabel("Power Level (dBm)")
+pylab.ylabel("Power (dB)")
+pylab.savefig('Diff.jpeg')
 pylab.show()
-
